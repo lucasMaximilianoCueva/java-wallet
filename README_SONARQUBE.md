@@ -70,7 +70,8 @@ git commit -m "feat: migrate to Maven and add SonarQube integration
 - Add pom.xml with SonarQube and JaCoCo plugins
 - Add basic tests to ensure build success
 - Configure headless mode for UI tests in CI
-- Add sonar-project.properties configuration"
+- Add sonar-project.properties configuration
+- Update README with new instructions and details
 ```
 
 ### 4. Push
@@ -164,3 +165,10 @@ Ver: **SONARQUBE_SETUP.md** para:
 **¡Listo para deploy!** 🚀
 
 Configura los secrets y haz push para ver el análisis en SonarCloud.
+
+---
+
+**Última actualización:** 2025-10-08  
+**Build Tool:** Maven 3.x  
+**Java Version:** 17 (requerido por SonarQube)  
+**SonarQube Plugin:** 3.10.0.2594
