@@ -126,6 +126,21 @@ En SonarCloud:
 
 ## 🐛 Troubleshooting
 
+### Error: "HeadlessException: No X11 DISPLAY variable was set"
+**Causa:** Tests de UI (Swing/AWT) fallan en CI porque no hay display gráfico.
+
+**Solución:** Ya configurado en `pom.xml`:
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>3.0.0</version>
+    <configuration>
+        <argLine>-Djava.awt.headless=true ${argLine}</argLine>
+    </configuration>
+</plugin>
+```
+
 ### Error: "Not authorized. Please check the properties sonar.login"
 **Solución:** Verifica que `SONAR_TOKEN` esté configurado correctamente en GitHub Secrets.
 
