@@ -1,7 +1,0 @@
-bootJar.enabled=false
-
-
-dependencies {
-   compile project(":wallet-entity")
-}
-

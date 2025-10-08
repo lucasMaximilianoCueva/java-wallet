@@ -1,9 +1,0 @@
-rootProject.name = 'java-wallet'
-
-include(
-        "wallet-common",
-        "wallet-entity",
-        "wallet-webapi",
-        "wallet-hsm",
-        "wallet-task"
-)
