@@ -115,6 +115,44 @@ subprojects {
 
 ---
 
+### 5. Error: `No value has been specified for property 'mainClassName'`
+
+**Causa:** Spring Boot 2.x requiere especificar `mainClassName` explícitamente cuando se usa el plugin `application`.
+
+**Solución:** Agregar la propiedad en `build.gradle`:
+
+```gradle
+// Para archivos Kotlin, agregar 'Kt' al final del nombre de la clase
+apply plugin: 'application'
+mainClassName = 'com.example.ApplicationKt'  // Para Kotlin
+// mainClassName = 'com.example.Application'  // Para Java
+```
+
+---
+
+### 6. Error: Compilación de Kotlin falla con dependencias
+
+**Causa:** Incompatibilidad entre versión de Kotlin y versiones de librerías Kotlin (ej: kotlinx-coroutines).
+
+**Solución:** Usar versiones compatibles de kotlinx-coroutines:
+
+| Kotlin Version | kotlinx-coroutines Compatible |
+|----------------|-------------------------------|
+| 1.3.x          | 1.3.x                        |
+| 1.4.x - 1.5.x  | 1.4.x - 1.5.x                |
+| 1.6.x - 1.8.x  | 1.6.x - 1.7.x                |
+| 1.9.x+         | 1.7.x+                       |
+
+```gradle
+// Ejemplo para Kotlin 1.3.72
+compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9"
+
+// Ejemplo para Kotlin 1.9.10
+compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+```
+
+---
+
 ## 🚀 Configuración Paso a Paso
 
 ### Paso 1: Verificar Versiones Actuales
@@ -346,6 +384,146 @@ sonar {
         property "sonar.pullrequest.base", System.getenv("GITHUB_BASE_REF")
     }
 }
+```
+
+---
+
+## 🛡️ Checklist de Prevención de Errores
+
+Antes de hacer commit y push, verifica estos puntos críticos:
+
+### Compatibilidad de Versiones
+
+- [ ] **Gradle vs Java**: Verifica que tu versión de Java en CI sea compatible con Gradle
+  ```bash
+  # Gradle 5.x → Java 8-12
+  # Gradle 6.x → Java 8-15
+  # Gradle 7.x → Java 8-17
+  ```
+
+- [ ] **Kotlin vs Gradle**: Verifica compatibilidad
+  ```bash
+  # Kotlin 1.3.x → Gradle 4.10+
+  # Kotlin 1.4-1.6 → Gradle 5.3+
+  # Kotlin 1.7-1.8 → Gradle 6.8+
+  # Kotlin 1.9+ → Gradle 6.8+
+  ```
+
+- [ ] **kotlinx-coroutines vs Kotlin**: Deben coincidir las versiones mayores
+  ```gradle
+  // Kotlin 1.3.x → kotlinx-coroutines 1.3.x
+  // Kotlin 1.9.x → kotlinx-coroutines 1.7.x+
+  ```
+
+- [ ] **Spring Boot vs Java**: Verifica requisitos
+  ```bash
+  # Spring Boot 2.x → Java 8+
+  # Spring Boot 3.x → Java 17+
+  ```
+
+### Configuración de Gradle
+
+- [ ] **gradle.properties**: Sin opciones JVM obsoletas
+  ```properties
+  # ❌ NO usar: -XX:MaxPermSize, -XX:PermSize
+  # ✅ Usar: -Xmx, -XX:+HeapDumpOnOutOfMemoryError
+  ```
+
+- [ ] **build.gradle**: Orden correcto de bloques
+  ```gradle
+  // 1. buildscript {}
+  // 2. plugins {}
+  // 3. allprojects {}
+  // 4. subprojects {}
+  ```
+
+- [ ] **Spring Boot 2.x**: Usar `bootJar` en lugar de `bootRepackage`
+  ```gradle
+  bootJar.enabled = false  // ✅
+  // bootRepackage.enabled = false  // ❌
+  ```
+
+- [ ] **Application plugin**: Especificar mainClassName
+  ```gradle
+  apply plugin: 'application'
+  mainClassName = 'com.example.ApplicationKt'  // Para Kotlin
+  ```
+
+### Dependencias
+
+- [ ] **Versiones consistentes**: Todas las dependencias de Kotlin deben usar la misma versión
+  ```gradle
+  ext.kotlinVersion = '1.3.72'
+  compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+  compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+  compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+  ```
+
+- [ ] **Librerías modernas**: Evitar versiones muy antiguas que puedan tener vulnerabilidades
+  ```gradle
+  // ⚠️ Revisar: mysql-connector-java:5.1.40 (muy antiguo)
+  // ⚠️ Revisar: HikariCP, caffeine, etc.
+  ```
+
+### GitHub Actions
+
+- [ ] **Secrets configurados**: SONAR_TOKEN y SONAR_HOST_URL
+- [ ] **fetch-depth: 0**: Necesario para análisis completo de SonarQube
+- [ ] **Versión de Java**: Coincide con requisitos de Gradle
+
+### Testing Local
+
+Antes de hacer push, ejecuta localmente:
+
+```bash
+# Limpiar build anterior
+./gradlew clean
+
+# Build completo con tests
+./gradlew build --info
+
+# Verificar que SonarQube funciona (requiere SONAR_TOKEN)
+./gradlew sonar --info
+```
+
+### Errores Comunes a Evitar
+
+| Error | Causa | Prevención |
+|-------|-------|------------|
+| MaxPermSize | Opción JVM obsoleta | Eliminar de gradle.properties |
+| NoClassDefFoundError Groovy | Java muy nuevo para Gradle | Usar Java compatible |
+| buildscript order | Orden incorrecto | buildscript antes de plugins |
+| bootRepackage | API de Spring Boot 1.x | Usar bootJar en Spring Boot 2.x |
+| mainClassName missing | Plugin application sin config | Especificar mainClassName |
+| Kotlin compilation error | Versiones incompatibles | Verificar tabla de compatibilidad |
+
+---
+
+## 📋 Matriz de Compatibilidad Rápida
+
+Para proyectos con **Gradle 5.3**:
+
+```gradle
+// build.gradle
+buildscript {
+    ext.kotlinVersion = '1.3.72'
+    ext.springBootVersion = '2.1.18.RELEASE'
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9"
+}
+```
+
+```yaml
+# .github/workflows/build.yml
+java-version: 11
+```
+
+```properties
+# gradle.properties
+org.gradle.jvmargs=-Xmx1024m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
 ```
 
 ---

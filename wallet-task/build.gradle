@@ -4,6 +4,8 @@ plugins {
 
 apply plugin: 'application'
 
+mainClassName = 'com.wallet.TaskApplicationKt'
+
 dependencies {
     compile project(":wallet-common")
 

@@ -3,6 +3,8 @@ plugins {
 }
 apply plugin: 'application'
 
+mainClassName = 'com.wallet.HsmApplicationKt'
+
 dependencies {
     compile project(":wallet-entity")
 }
