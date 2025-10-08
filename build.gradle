@@ -123,3 +123,14 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
 }
+
+plugins {
+  id "org.sonarqube" version "6.3.1.5724"
+}
+
+sonar {
+  properties {
+    property "sonar.projectKey", "lucasMaximilianoCueva_java-wallet_915fc941-ad77-4bf0-9539-1003563342c9"
+    property "sonar.projectName", "java-wallet"
+  }
+}
