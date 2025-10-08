@@ -3,7 +3,7 @@
 allprojects {
 
     ext {
-        querydslVersion = "5.0.0"
+        querydslVersion = "5.1.0"
         tokenVersion = "3.0.0"
     }
     repositories {
