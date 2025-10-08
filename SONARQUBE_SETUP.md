@@ -1,4 +1,4 @@
-# SonarQube Integration - Maven Project
+# SonarQube Integration - Java To-Do List
 
 ## ✅ Configuración Completada
 
@@ -6,36 +6,58 @@ Este proyecto está configurado para análisis con **SonarCloud** usando **Maven
 
 ---
 
+## 📁 Estructura del Proyecto
+
+```
+java-wallet/
+├── src/
+│   ├── main/
+│   │   └── java/
+│   │       └── Main.java
+│   └── test/
+│       └── java/
+│           └── MainTest.java
+├── pom.xml
+├── sonar-project.properties
+└── .github/workflows/build.yml
+```
+
+---
+
 ## 📋 Archivos Configurados
 
-### 1. `pom.xml`
-- ✅ Plugin `sonar-maven-plugin` (v3.10.0.2594)
-- ✅ Plugin `jacoco-maven-plugin` (v0.8.11) para cobertura de código
-- ✅ Propiedades de SonarQube configuradas
+### 1. `pom.xml` ✅
+- Plugin `sonar-maven-plugin` (v3.10.0.2594)
+- Plugin `jacoco-maven-plugin` (v0.8.11) para cobertura
+- Configuración headless para tests de UI
+- Main class configurada: `Main`
 
-### 2. `.github/workflows/build.yml`
-- ✅ GitHub Actions configurado para Maven
-- ✅ Cache de Maven y SonarQube
-- ✅ Comando de análisis integrado
+### 2. `.github/workflows/build.yml` ✅
+- GitHub Actions configurado para Maven
+- Cache de Maven y SonarQube
+- Comando de análisis integrado
 
-### 3. `sonar-project.properties` (Opcional)
-- ✅ Configuración adicional de SonarQube
-- ✅ Paths de código fuente y tests
-- ✅ Configuración de JaCoCo
+### 3. `sonar-project.properties` ✅
+- Configuración de SonarQube
+- Paths de código fuente y tests
+- Configuración de JaCoCo
+
+### 4. `src/test/java/MainTest.java` ✅
+- Tests básicos para evitar fallos de build
 
 ---
 
 ## 🔑 Configurar Secrets en GitHub
 
-Antes de hacer push, configura estos secrets en tu repositorio:
+**IMPORTANTE:** Configura estos secrets antes de hacer push:
 
-1. Ve a: **Settings** → **Secrets and variables** → **Actions**
-2. Agrega los siguientes secrets:
+1. Ve a: `Settings` → `Secrets and variables` → `Actions`
+2. Agrega:
 
 ### SONAR_TOKEN
 ```
-Valor: Tu token de SonarCloud
 Obtener en: https://sonarcloud.io/account/security
+Tipo: User Token
 ```
 
 ### SONAR_HOST_URL
@@ -45,27 +67,29 @@ Valor: https://sonarcloud.io
 
 ---
 
-## 🚀 Ejecutar Localmente
+## 🚀 Comandos Útiles
 
-### Build normal
+### Build local
+```bash
+mvn clean compile
+```
+
+### Ejecutar aplicación
+```bash
+mvn clean package
+java -jar target/java-todo-list-1.0-SNAPSHOT.jar
+```
+
+### Build + Tests
 ```bash
 mvn clean verify
 ```
 
-### Build + Análisis SonarQube
+### Build + Tests + SonarQube (local)
 ```bash
 mvn clean verify sonar:sonar \
   -Dsonar.projectKey=lucasMaximilianoCueva_java-wallet \
-  -Dsonar.organization=lucasMaximilianoCueva \
-  -Dsonar.host.url=https://sonarcloud.io \
-  -Dsonar.token=TU_TOKEN_AQUI
-```
-
-### Solo análisis (sin build)
-```bash
-mvn sonar:sonar \
-  -Dsonar.projectKey=lucasMaximilianoCueva_java-wallet \
-  -Dsonar.organization=lucasMaximilianoCueva \
+  -Dsonar.organization=lucasmaximilianocu eva \
   -Dsonar.host.url=https://sonarcloud.io \
   -Dsonar.token=TU_TOKEN_AQUI
 ```
@@ -74,16 +98,20 @@ mvn sonar:sonar \
 
 ## 📊 Verificar Resultados
 
-Después del push, verifica:
+### En GitHub Actions
+1. Ve a la pestaña **Actions** en tu repositorio
+2. Verifica que el workflow "Build and analyze" se ejecute correctamente
+3. Revisa los logs si hay errores
 
-1. **GitHub Actions**: 
-   - Ve a la pestaña **Actions** en tu repositorio
-   - Verifica que el workflow "Build and analyze" se ejecute correctamente
-
-2. **SonarCloud**:
-   - Ve a: https://sonarcloud.io/organizations/lucasmaximilianocu eva/projects
-   - Busca el proyecto `java-wallet`
-   - Revisa métricas de calidad, bugs, vulnerabilidades, code smells
+### En SonarCloud
+1. Ve a: https://sonarcloud.io/organizations/lucasmaximilianocu eva/projects
+2. Busca el proyecto `java-wallet`
+3. Revisa:
+   - **Bugs**: Errores de código
+   - **Vulnerabilities**: Problemas de seguridad
+   - **Code Smells**: Malas prácticas
+   - **Coverage**: Cobertura de tests
+   - **Duplications**: Código duplicado
 
 ---
 
@@ -112,16 +140,6 @@ sonar.exclusions=**/generated/**,**/dto/**,**/config/**
 sonar.test.exclusions=**/integration/**
 ```
 
-### Configurar umbrales de Quality Gate
-
-En SonarCloud:
-1. Ve a **Project Settings** → **Quality Gate**
-2. Selecciona o crea un Quality Gate personalizado
-3. Define umbrales para:
-   - Coverage mínimo (ej: 80%)
-   - Duplicación máxima (ej: 3%)
-   - Bugs/Vulnerabilities: 0
-
 ---
 
 ## 🐛 Troubleshooting
@@ -131,49 +149,45 @@ En SonarCloud:
 
 **Solución:** Ya configurado en `pom.xml`:
 ```xml
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-plugin</artifactId>
-    <version>3.0.0</version>
-    <configuration>
-        <argLine>-Djava.awt.headless=true ${argLine}</argLine>
-    </configuration>
-</plugin>
+<configuration>
+    <argLine>-Djava.awt.headless=true ${argLine}</argLine>
+</configuration>
 ```
 
 ### Error: "Not authorized. Please check the properties sonar.login"
 **Solución:** Verifica que `SONAR_TOKEN` esté configurado correctamente en GitHub Secrets.
 
 ### Error: "Project key already exists"
-**Solución:** Cambia el `sonar.projectKey` en `pom.xml` y en el workflow.
+**Solución:** Cambia el `sonar.projectKey` en `pom.xml`, `sonar-project.properties` y en el workflow.
 
-### Error: "Coverage report not found"
-**Solución:** Asegúrate de ejecutar `mvn verify` antes de `sonar:sonar` para generar el reporte de JaCoCo.
+### Error: "No tests were executed"
+**Solución:** Ya incluido `MainTest.java` con tests básicos.
 
-### Build exitoso pero sin análisis en SonarCloud
+### Build local funciona pero falla en CI
 **Solución:** 
-1. Verifica que `SONAR_HOST_URL` esté configurado
-2. Revisa los logs del workflow en GitHub Actions
-3. Verifica que el proyecto exista en SonarCloud
+1. Verifica que la estructura Maven sea correcta
+2. Asegúrate de que `src/main/java` y `src/test/java` existan
+3. Revisa los logs del workflow en GitHub Actions
 
 ---
 
 ## 📚 Plugins Incluidos
 
-### 1. SonarQube Maven Plugin
-- **Versión:** 3.10.0.2594
-- **Función:** Ejecuta el análisis de código y envía resultados a SonarCloud
-- **Documentación:** https://docs.sonarsource.com/sonarqube/latest/analyzing-source-code/scanners/sonarscanner-for-maven/
+### 1. SonarQube Maven Plugin (v3.10.0.2594)
+- Ejecuta el análisis de código
+- Envía resultados a SonarCloud
 
-### 2. JaCoCo Maven Plugin
-- **Versión:** 0.8.11
-- **Función:** Genera reportes de cobertura de código
-- **Documentación:** https://www.jacoco.org/jacoco/trunk/doc/maven.html
+### 2. JaCoCo Maven Plugin (v0.8.11)
+- Genera reportes de cobertura de código
+- Integrado con SonarQube
 
-### 3. Maven Surefire Plugin
-- **Versión:** 3.0.0
-- **Función:** Ejecuta tests unitarios
-- **Documentación:** https://maven.apache.org/surefire/maven-surefire-plugin/
+### 3. Maven Surefire Plugin (v3.0.0)
+- Ejecuta tests unitarios
+- Configurado en modo headless para CI
+
+### 4. Maven JAR Plugin (v3.3.0)
+- Genera JAR ejecutable
+- Main class: `Main`
 
 ---
 
@@ -181,34 +195,38 @@ En SonarCloud:
 
 Antes de hacer push:
 
+- [x] Estructura Maven creada (`src/main/java`, `src/test/java`)
+- [x] `pom.xml` configurado con plugins de SonarQube y JaCoCo
+- [x] `sonar-project.properties` creado
+- [x] Tests básicos creados en `src/test/java`
 - [ ] `SONAR_TOKEN` configurado en GitHub Secrets
 - [ ] `SONAR_HOST_URL` configurado en GitHub Secrets
-- [ ] Proyecto creado en SonarCloud (se crea automáticamente en el primer análisis)
-- [ ] `sonar.organization` correcto en `pom.xml`
-- [ ] `sonar.projectKey` correcto en `pom.xml` y workflow
-- [ ] Tests existen en `src/test/java`
 - [ ] Build local exitoso: `mvn clean verify`
 
 ---
 
 ## 🎯 Próximos Pasos
 
-1. **Commit y push** de los cambios:
+1. **Configura los secrets** en GitHub (SONAR_TOKEN y SONAR_HOST_URL)
+
+2. **Commit y push:**
    ```bash
-   git add pom.xml .github/workflows/build.yml sonar-project.properties
-   git commit -m "feat: add SonarQube integration with Maven"
+   git add .
+   git commit -m "feat: add Maven structure and SonarQube integration"
    git push
    ```
 
-2. **Verificar el workflow** en GitHub Actions
+3. **Verifica el workflow** en GitHub Actions
 
-3. **Revisar resultados** en SonarCloud
+4. **Revisa resultados** en SonarCloud
 
-4. **Configurar Quality Gate** según tus necesidades
+5. **Agrega más tests** para mejorar la cobertura
 
-5. **Agregar badge** de SonarCloud al README (opcional):
+6. **Agrega badge** de SonarCloud al README (opcional):
    ```markdown
    [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=lucasMaximilianoCueva_java-wallet&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=lucasMaximilianoCueva_java-wallet)
+   
+   [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=lucasMaximilianoCueva_java-wallet&metric=coverage)](https://sonarcloud.io/summary/new_code?id=lucasMaximilianoCueva_java-wallet)
    ```
 
 ---
@@ -216,4 +234,5 @@ Antes de hacer push:
 **Última actualización:** 2025-10-08  
 **Build Tool:** Maven 3.x  
 **Java Version:** 11  
-**SonarQube Plugin:** 3.10.0.2594
+**SonarQube Plugin:** 3.10.0.2594  
+**Proyecto:** Java Swing To-Do List
