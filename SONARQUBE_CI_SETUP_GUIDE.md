@@ -153,6 +153,57 @@ compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
 
 ---
 
+### 7. Error: Dependencias de JitPack no disponibles
+
+**Causa:** Dependencias que apuntan a repositorios de GitHub (vía JitPack) que no existen, están privados o no tienen releases correctos.
+
+**Síntomas:**
+```
+Resource missing. [HTTP GET: https://maven.aliyun.com/repository/public/com/github/xxx/yyy/1.0/yyy-1.0.pom]
+Resource missing. [HTTP HEAD: https://jitpack.io/com/github/xxx/yyy/1.0/yyy-1.0.jar]
+```
+
+**Solución:**
+
+1. **Verificar el repositorio GitHub existe:**
+   ```bash
+   # Formato: com.github.USUARIO:REPO:VERSION
+   # Ejemplo: com.github.sealedtx:bitcoin-cash-converter:1.0
+   # Verifica: https://github.com/sealedtx/bitcoin-cash-converter
+   ```
+
+2. **Verificar el tag/release existe:**
+   ```bash
+   # Para versión 1.0, debe existir tag "1.0" o "v1.0" en GitHub
+   # Verifica: https://github.com/USUARIO/REPO/releases
+   ```
+
+3. **Comentar dependencias no disponibles:**
+   ```gradle
+   dependencies {
+       // ❌ Dependencia no disponible - comentada temporalmente
+       // compile 'com.github.sealedtx:bitcoin-cash-converter:1.0'
+       
+       // ✅ Usar alternativa de Maven Central si existe
+       compile 'org.bitcoinj:bitcoinj-core:0.15.10'
+   }
+   ```
+
+4. **Configurar timeout para JitPack:**
+   ```gradle
+   repositories {
+       maven { 
+           url 'https://jitpack.io'
+           // Evitar timeouts largos
+           content {
+               includeGroup "com.github.USUARIO"
+           }
+       }
+   }
+   ```
+
+---
+
 ## 🚀 Configuración Paso a Paso
 
 ### Paso 1: Verificar Versiones Actuales
@@ -459,10 +510,30 @@ Antes de hacer commit y push, verifica estos puntos críticos:
   compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
   ```
 
+- [ ] **Dependencias de JitPack**: Verificar que existan y tengan releases
+  ```gradle
+  // ❌ Evitar dependencias de GitHub sin verificar
+  // compile 'com.github.usuario:repo:version'
+  
+  // ✅ Verificar primero en GitHub:
+  // 1. Repositorio existe y es público
+  // 2. Tag/release "version" existe
+  // 3. Proyecto tiene build.gradle o pom.xml
+  ```
+
 - [ ] **Librerías modernas**: Evitar versiones muy antiguas que puedan tener vulnerabilidades
   ```gradle
   // ⚠️ Revisar: mysql-connector-java:5.1.40 (muy antiguo)
   // ⚠️ Revisar: HikariCP, caffeine, etc.
+  ```
+
+- [ ] **Repositorios en orden correcto**: Maven Central primero, JitPack al final
+  ```gradle
+  repositories {
+      mavenLocal()
+      mavenCentral()
+      maven { url 'https://jitpack.io' }  // Al final
+  }
   ```
 
 ### GitHub Actions
@@ -496,6 +567,8 @@ Antes de hacer push, ejecuta localmente:
 | bootRepackage | API de Spring Boot 1.x | Usar bootJar en Spring Boot 2.x |
 | mainClassName missing | Plugin application sin config | Especificar mainClassName |
 | Kotlin compilation error | Versiones incompatibles | Verificar tabla de compatibilidad |
+| JitPack dependencies missing | Repo GitHub no existe/privado | Verificar repo antes de agregar |
+| Build timeout | Dependencias lentas/no disponibles | Comentar deps problemáticas |
 
 ---
 
