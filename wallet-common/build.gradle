@@ -1,4 +1,4 @@
-bootRepackage.enabled=false
+bootJar.enabled=false
 
 
 dependencies {

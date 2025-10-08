@@ -1,4 +1,4 @@
-bootRepackage.enabled=false
+bootJar.enabled=false
 
 apply plugin: "com.waykichain.utils.codegen"
 
