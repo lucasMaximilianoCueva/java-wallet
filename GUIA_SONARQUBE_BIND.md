@@ -21,6 +21,7 @@
 1. Una vez logueado, click en **"+"** → **"Create new organization"**
 2. Selecciona tu cuenta de GitHub
 3. Define el nombre de la organización (ej: `bind-security`)
+   - **IMPORTANTE**: Usar minúsculas sin espacios (ej: `lucasmaximilianocueva`)
 4. Elige el plan **Free** para proyectos públicos
 
 ### Paso 3: Generar Token
