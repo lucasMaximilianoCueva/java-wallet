@@ -2,7 +2,7 @@
 
 ## 🎯 Resumen de Cambios
 
-Se ha migrado el proyecto a **Maven** y configurado la integración con **SonarCloud**.
+Se ha migrado el proyecto a **Maven** y configurado la integración con **SonarQube** (instancia local).
 
 ### Estructura creada:
 ```
@@ -39,13 +39,13 @@ java-wallet/
 ### Secret 1: SONAR_TOKEN
 ```
 Name: SONAR_TOKEN
-Value: [Tu token de https://sonarcloud.io/account/security]
+Value: [Tu token de http://181.104.131.213:31755 → My Account → Security → Generate Token]
 ```
 
 ### Secret 2: SONAR_HOST_URL
 ```
 Name: SONAR_HOST_URL
-Value: https://sonarcloud.io
+Value: http://181.104.131.213:31755
 ```
 
 ---
@@ -88,8 +88,8 @@ git push origin master
 - Verifica que el workflow "Build and analyze" se ejecute
 - Debe mostrar: ✅ Build and analyze
 
-### 2. SonarCloud
-- Ve a: https://sonarcloud.io/organizations/lucasmaximilianocu eva/projects
+### 2. SonarQube
+- Ve a: http://181.104.131.213:31755
 - Busca: `java-wallet`
 - Revisa métricas de calidad
 
@@ -104,9 +104,9 @@ git push origin master
 - ✅ JaCoCo Plugin (cobertura)
 - ✅ Maven JAR Plugin (ejecutable)
 
-### sonar-project.properties
-- ✅ Project key: `lucasMaximilianoCueva_java-wallet`
-- ✅ Organization: `lucasmaximilianocu eva`
+### pom.xml - Configuración SonarQube
+- ✅ Project key: `java-wallet`
+- ✅ Host URL: `http://181.104.131.213:31755`
 - ✅ Source paths configurados
 - ✅ JaCoCo report path configurado
 
@@ -127,7 +127,8 @@ git push origin master
 ### Si SonarQube no aparece en el dashboard
 1. Verifica que `SONAR_TOKEN` esté configurado
 2. Revisa los logs del workflow en GitHub Actions
-3. Espera 1-2 minutos para que aparezca en SonarCloud
+3. Verifica que el servidor SonarQube (http://181.104.131.213:31755) sea accesible desde GitHub Actions
+4. Espera 1-2 minutos para que aparezca en SonarQube
 
 ### Si los tests fallan localmente
 ```bash
@@ -158,13 +159,15 @@ Ver: **SONARQUBE_SETUP.md** para:
 - [ ] **SONAR_HOST_URL configurado en GitHub** ⚠️
 - [ ] Commit y push realizados
 - [ ] Workflow verificado en GitHub Actions
-- [ ] Resultados revisados en SonarCloud
+- [ ] Resultados revisados en SonarQube (http://181.104.131.213:31755)
 
 ---
 
 **¡Listo para deploy!** 🚀
 
-Configura los secrets y haz push para ver el análisis en SonarCloud.
+Configura los secrets y haz push para ver el análisis en SonarQube.
+
+**NOTA:** El servidor SonarQube debe ser accesible públicamente desde GitHub Actions.
 
 ---
 

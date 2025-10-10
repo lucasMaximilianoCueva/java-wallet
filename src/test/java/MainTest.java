@@ -1,20 +1,22 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Basic test class for Main application
+ * Test suite for Main application entry point.
  */
+@DisplayName("Main Application Tests")
 public class MainTest {
 
     @Test
-    public void testApplicationExists() {
-        // Basic test to ensure Main class exists
+    @DisplayName("Should have Main class available")
+    public void testMainClassExists() {
         assertNotNull(Main.class);
     }
 
     @Test
-    public void testTaskItemExists() {
-        // Basic test to ensure TaskItem class exists
-        assertNotNull(TaskItem.class);
+    @DisplayName("Should have main method")
+    public void testMainMethodExists() throws NoSuchMethodException {
+        assertNotNull(Main.class.getMethod("main", String[].class));
     }
 }

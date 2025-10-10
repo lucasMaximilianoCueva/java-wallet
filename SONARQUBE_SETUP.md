@@ -2,7 +2,7 @@
 
 ## ✅ Configuración Completada
 
-Este proyecto está configurado para análisis con **SonarCloud** usando **Maven**.
+Este proyecto está configurado para análisis con **SonarQube** (instancia local) usando **Maven**.
 
 ---
 
@@ -56,13 +56,14 @@ java-wallet/
 
 ### SONAR_TOKEN
 ```
-Obtener en: https://sonarcloud.io/account/security
+Obtener en: http://181.104.131.213:31755
+Ruta: My Account → Security → Generate Token
 Tipo: User Token
 ```
 
 ### SONAR_HOST_URL
 ```
-Valor: https://sonarcloud.io
+Valor: http://181.104.131.213:31755
 ```
 
 ---
@@ -88,9 +89,8 @@ mvn clean verify
 ### Build + Tests + SonarQube (local)
 ```bash
 mvn clean verify sonar:sonar \
-  -Dsonar.projectKey=lucasMaximilianoCueva_java-wallet \
-  -Dsonar.organization=lucasmaximilianocu eva \
-  -Dsonar.host.url=https://sonarcloud.io \
+  -Dsonar.projectKey=java-wallet \
+  -Dsonar.host.url=http://181.104.131.213:31755 \
   -Dsonar.token=TU_TOKEN_AQUI
 ```
 
@@ -103,8 +103,8 @@ mvn clean verify sonar:sonar \
 2. Verifica que el workflow "Build and analyze" se ejecute correctamente
 3. Revisa los logs si hay errores
 
-### En SonarCloud
-1. Ve a: https://sonarcloud.io/organizations/lucasmaximilianocu eva/projects
+### En SonarQube
+1. Ve a: http://181.104.131.213:31755
 2. Busca el proyecto `java-wallet`
 3. Revisa:
    - **Bugs**: Errores de código
@@ -122,14 +122,14 @@ mvn clean verify sonar:sonar \
 Edita `pom.xml`:
 ```xml
 <properties>
-    <sonar.organization>TU_ORGANIZACION</sonar.organization>
-    <sonar.projectKey>TU_ORGANIZACION_TU_PROYECTO</sonar.projectKey>
+    <sonar.host.url>http://TU_SERVIDOR:PUERTO</sonar.host.url>
+    <sonar.projectKey>TU_PROJECT_KEY</sonar.projectKey>
 </properties>
 ```
 
 Y actualiza `.github/workflows/build.yml`:
 ```yaml
-run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=TU_ORGANIZACION_TU_PROYECTO
+run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=TU_PROJECT_KEY
 ```
 
 ### Excluir archivos del análisis
@@ -175,7 +175,7 @@ sonar.test.exclusions=**/integration/**
 
 ### 1. SonarQube Maven Plugin (v3.10.0.2594)
 - Ejecuta el análisis de código
-- Envía resultados a SonarCloud
+- Envía resultados a SonarQube (instancia local)
 
 ### 2. JaCoCo Maven Plugin (v0.8.11)
 - Genera reportes de cobertura de código
@@ -218,21 +218,17 @@ Antes de hacer push:
 
 3. **Verifica el workflow** en GitHub Actions
 
-4. **Revisa resultados** en SonarCloud
+4. **Revisa resultados** en SonarQube (http://181.104.131.213:31755)
 
 5. **Agrega más tests** para mejorar la cobertura
 
-6. **Agrega badge** de SonarCloud al README (opcional):
-   ```markdown
-   [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=lucasMaximilianoCueva_java-wallet&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=lucasMaximilianoCueva_java-wallet)
-   
-   [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=lucasMaximilianoCueva_java-wallet&metric=coverage)](https://sonarcloud.io/summary/new_code?id=lucasMaximilianoCueva_java-wallet)
-   ```
+6. **IMPORTANTE**: Asegúrate de que el servidor SonarQube sea accesible públicamente desde GitHub Actions
 
 ---
 
-**Última actualización:** 2025-10-08  
+**Última actualización:** 2025-10-09  
 **Build Tool:** Maven 3.x  
-**Java Version:** 11  
+**Java Version:** 17  
 **SonarQube Plugin:** 3.10.0.2594  
+**SonarQube Server:** http://181.104.131.213:31755  
 **Proyecto:** Java Swing To-Do List
