@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TaskService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java To-Do List</a> &gt; <a href="index.source.html" class="el_package">service</a> &gt; <span class="el_source">TaskService.java</span></div><h1>TaskService.java</h1><pre class="source lang-java linenums">package service;
+
+import model.TaskItem;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Service class for managing tasks.
+ * Implements business logic for task operations following SOLID principles.
+ */
+public class TaskService {
+    private final List&lt;TaskItem&gt; tasks;
+
+<span class="fc" id="L17">    public TaskService() {</span>
+<span class="fc" id="L18">        this.tasks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L19">    }</span>
+
+    /**
+     * Adds a new task to the list.
+     * 
+     * @param task The task to add
+     * @throws IllegalArgumentException if task is null
+     */
+    public void addTask(TaskItem task) {
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (task == null) {</span>
+<span class="fc" id="L29">            throw new IllegalArgumentException(&quot;Task cannot be null&quot;);</span>
+        }
+<span class="fc" id="L31">        tasks.add(task);</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Removes a task at the specified index.
+     * 
+     * @param index The index of the task to remove
+     * @throws IndexOutOfBoundsException if index is invalid
+     */
+    public void removeTask(int index) {
+<span class="fc bfc" id="L41" title="All 4 branches covered.">        if (index &lt; 0 || index &gt;= tasks.size()) {</span>
+<span class="fc" id="L42">            throw new IndexOutOfBoundsException(&quot;Invalid task index: &quot; + index);</span>
+        }
+<span class="fc" id="L44">        tasks.remove(index);</span>
+<span class="fc" id="L45">    }</span>
+
+    /**
+     * Gets a task at the specified index.
+     * 
+     * @param index The index of the task
+     * @return The task at the specified index
+     * @throws IndexOutOfBoundsException if index is invalid
+     */
+    public TaskItem getTask(int index) {
+<span class="fc bfc" id="L55" title="All 4 branches covered.">        if (index &lt; 0 || index &gt;= tasks.size()) {</span>
+<span class="fc" id="L56">            throw new IndexOutOfBoundsException(&quot;Invalid task index: &quot; + index);</span>
+        }
+<span class="fc" id="L58">        return tasks.get(index);</span>
+    }
+
+    /**
+     * Gets all tasks.
+     * 
+     * @return An unmodifiable list of all tasks
+     */
+    public List&lt;TaskItem&gt; getAllTasks() {
+<span class="fc" id="L67">        return Collections.unmodifiableList(tasks);</span>
+    }
+
+    /**
+     * Gets all completed tasks.
+     * 
+     * @return List of completed tasks
+     */
+    public List&lt;TaskItem&gt; getCompletedTasks() {
+<span class="fc" id="L76">        return tasks.stream()</span>
+<span class="fc" id="L77">                .filter(TaskItem::isCompleted)</span>
+<span class="fc" id="L78">                .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * Gets all pending tasks.
+     * 
+     * @return List of pending tasks
+     */
+    public List&lt;TaskItem&gt; getPendingTasks() {
+<span class="fc" id="L87">        return tasks.stream()</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">                .filter(task -&gt; !task.isCompleted())</span>
+<span class="fc" id="L89">                .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * Gets all overdue tasks.
+     * 
+     * @return List of overdue tasks
+     */
+    public List&lt;TaskItem&gt; getOverdueTasks() {
+<span class="fc" id="L98">        return tasks.stream()</span>
+<span class="fc" id="L99">                .filter(TaskItem::isOverdue)</span>
+<span class="fc" id="L100">                .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * Gets the total number of tasks.
+     * 
+     * @return The total number of tasks
+     */
+    public int getTaskCount() {
+<span class="fc" id="L109">        return tasks.size();</span>
+    }
+
+    /**
+     * Clears all tasks.
+     */
+    public void clearAllTasks() {
+<span class="fc" id="L116">        tasks.clear();</span>
+<span class="fc" id="L117">    }</span>
+
+    /**
+     * Checks if the task list is empty.
+     * 
+     * @return true if there are no tasks
+     */
+    public boolean isEmpty() {
+<span class="fc" id="L125">        return tasks.isEmpty();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

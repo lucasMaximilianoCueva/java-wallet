@@ -1,3 +1,11 @@
 Main.class
-CustomListRenderer.class
-TaskItem.class
+util/StringUtils.class
+util/PasswordManager.class
+ui/CustomListRenderer.class
+util/FileManager.class
+security/UserAuthenticator.class
+service/TaskService.class
+model/TaskItem.class
+util/DataValidator.class
+ui/TodoListUI.class
+util/DatabaseHelper.class

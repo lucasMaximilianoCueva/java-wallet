@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TodoListUI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java To-Do List</a> &gt; <a href="index.source.html" class="el_package">ui</a> &gt; <span class="el_source">TodoListUI.java</span></div><h1>TodoListUI.java</h1><pre class="source lang-java linenums">package ui;
+
+import model.TaskItem;
+import service.TaskService;
+
+import javax.swing.*;
+import java.awt.*;
+
+/**
+ * Main UI class for the To-Do List application.
+ * Handles all user interface components and interactions.
+ */
+public class TodoListUI {
+    private final TaskService taskService;
+    private DefaultListModel&lt;TaskItem&gt; listModel;
+    private JList&lt;TaskItem&gt; taskList;
+    private JTextField taskField;
+    private JTextField dateField;
+    private JFrame frame;
+
+<span class="fc" id="L21">    public TodoListUI(TaskService taskService) {</span>
+<span class="pc bpc" id="L22" title="1 of 2 branches missed.">        if (taskService == null) {</span>
+<span class="fc" id="L23">            throw new IllegalArgumentException(&quot;TaskService cannot be null&quot;);</span>
+        }
+<span class="nc" id="L25">        this.taskService = taskService;</span>
+<span class="nc" id="L26">        initializeUI();</span>
+<span class="nc" id="L27">    }</span>
+
+    /**
+     * Initializes the user interface components.
+     */
+    private void initializeUI() {
+<span class="nc" id="L33">        frame = new JFrame(&quot;To-Do List Manager&quot;);</span>
+<span class="nc" id="L34">        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+<span class="nc" id="L35">        frame.setSize(600, 500);</span>
+<span class="nc" id="L36">        frame.setLocationRelativeTo(null);</span>
+
+<span class="nc" id="L38">        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));</span>
+<span class="nc" id="L39">        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));</span>
+
+        // Task list
+<span class="nc" id="L42">        listModel = new DefaultListModel&lt;&gt;();</span>
+<span class="nc" id="L43">        taskList = new JList&lt;&gt;(listModel);</span>
+<span class="nc" id="L44">        taskList.setCellRenderer(new CustomListRenderer());</span>
+<span class="nc" id="L45">        taskList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);</span>
+<span class="nc" id="L46">        JScrollPane scrollPane = new JScrollPane(taskList);</span>
+<span class="nc" id="L47">        mainPanel.add(scrollPane, BorderLayout.CENTER);</span>
+
+        // Input panel
+<span class="nc" id="L50">        JPanel inputPanel = createInputPanel();</span>
+<span class="nc" id="L51">        mainPanel.add(inputPanel, BorderLayout.NORTH);</span>
+
+        // Button panel
+<span class="nc" id="L54">        JPanel buttonPanel = createButtonPanel();</span>
+<span class="nc" id="L55">        mainPanel.add(buttonPanel, BorderLayout.SOUTH);</span>
+
+<span class="nc" id="L57">        frame.add(mainPanel);</span>
+<span class="nc" id="L58">    }</span>
+
+    /**
+     * Creates the input panel for task entry.
+     * 
+     * @return The configured input panel
+     */
+    private JPanel createInputPanel() {
+<span class="nc" id="L66">        JPanel panel = new JPanel(new GridLayout(2, 2, 10, 10));</span>
+<span class="nc" id="L67">        panel.setBorder(BorderFactory.createTitledBorder(&quot;Add New Task&quot;));</span>
+
+<span class="nc" id="L69">        panel.add(new JLabel(&quot;Task:&quot;));</span>
+<span class="nc" id="L70">        taskField = new JTextField();</span>
+<span class="nc" id="L71">        panel.add(taskField);</span>
+
+<span class="nc" id="L73">        panel.add(new JLabel(&quot;Due Date (dd-MM-yyyy):&quot;));</span>
+<span class="nc" id="L74">        dateField = new JTextField();</span>
+<span class="nc" id="L75">        panel.add(dateField);</span>
+
+<span class="nc" id="L77">        return panel;</span>
+    }
+
+    /**
+     * Creates the button panel with action buttons.
+     * 
+     * @return The configured button panel
+     */
+    private JPanel createButtonPanel() {
+<span class="nc" id="L86">        JPanel panel = new JPanel(new GridLayout(1, 5, 10, 10));</span>
+
+<span class="nc" id="L88">        JButton addButton = new JButton(&quot;Add&quot;);</span>
+<span class="nc" id="L89">        JButton removeButton = new JButton(&quot;Remove&quot;);</span>
+<span class="nc" id="L90">        JButton editButton = new JButton(&quot;Edit&quot;);</span>
+<span class="nc" id="L91">        JButton toggleButton = new JButton(&quot;Toggle Status&quot;);</span>
+<span class="nc" id="L92">        JButton clearButton = new JButton(&quot;Clear All&quot;);</span>
+
+<span class="nc" id="L94">        addButton.addActionListener(e -&gt; addTask());</span>
+<span class="nc" id="L95">        removeButton.addActionListener(e -&gt; removeTask());</span>
+<span class="nc" id="L96">        editButton.addActionListener(e -&gt; editTask());</span>
+<span class="nc" id="L97">        toggleButton.addActionListener(e -&gt; toggleTaskStatus());</span>
+<span class="nc" id="L98">        clearButton.addActionListener(e -&gt; clearAllTasks());</span>
+
+<span class="nc" id="L100">        panel.add(addButton);</span>
+<span class="nc" id="L101">        panel.add(removeButton);</span>
+<span class="nc" id="L102">        panel.add(editButton);</span>
+<span class="nc" id="L103">        panel.add(toggleButton);</span>
+<span class="nc" id="L104">        panel.add(clearButton);</span>
+
+<span class="nc" id="L106">        return panel;</span>
+    }
+
+    /**
+     * Adds a new task to the list.
+     */
+    private void addTask() {
+<span class="nc" id="L113">        String taskText = taskField.getText().trim();</span>
+<span class="nc" id="L114">        String dueDateText = dateField.getText().trim();</span>
+        
+<span class="nc bnc" id="L116" title="All 4 branches missed.">        if (taskText.isEmpty() || dueDateText.isEmpty()) {</span>
+<span class="nc" id="L117">            showError(&quot;Please enter both task and due date&quot;);</span>
+<span class="nc" id="L118">            return;</span>
+        }
+
+        try {
+<span class="nc" id="L122">            TaskItem newTask = new TaskItem(taskText, dueDateText);</span>
+<span class="nc" id="L123">            taskService.addTask(newTask);</span>
+<span class="nc" id="L124">            listModel.addElement(newTask);</span>
+<span class="nc" id="L125">            taskField.setText(&quot;&quot;);</span>
+<span class="nc" id="L126">            dateField.setText(&quot;&quot;);</span>
+<span class="nc" id="L127">            showInfo(&quot;Task added successfully!&quot;);</span>
+<span class="nc" id="L128">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L129">            showError(&quot;Error adding task: &quot; + e.getMessage());</span>
+<span class="nc" id="L130">        }</span>
+<span class="nc" id="L131">    }</span>
+
+    /**
+     * Removes the selected task.
+     */
+    private void removeTask() {
+<span class="nc" id="L137">        int selectedIndex = taskList.getSelectedIndex();</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (selectedIndex == -1) {</span>
+<span class="nc" id="L139">            showError(&quot;Please select a task to remove&quot;);</span>
+<span class="nc" id="L140">            return;</span>
+        }
+
+        try {
+<span class="nc" id="L144">            taskService.removeTask(selectedIndex);</span>
+<span class="nc" id="L145">            listModel.remove(selectedIndex);</span>
+<span class="nc" id="L146">            showInfo(&quot;Task removed successfully!&quot;);</span>
+<span class="nc" id="L147">        } catch (IndexOutOfBoundsException e) {</span>
+<span class="nc" id="L148">            showError(&quot;Error removing task: &quot; + e.getMessage());</span>
+<span class="nc" id="L149">        }</span>
+<span class="nc" id="L150">    }</span>
+
+    /**
+     * Edits the selected task.
+     */
+    private void editTask() {
+<span class="nc" id="L156">        int selectedIndex = taskList.getSelectedIndex();</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        if (selectedIndex == -1) {</span>
+<span class="nc" id="L158">            showError(&quot;Please select a task to edit&quot;);</span>
+<span class="nc" id="L159">            return;</span>
+        }
+
+        try {
+<span class="nc" id="L163">            TaskItem item = taskService.getTask(selectedIndex);</span>
+<span class="nc" id="L164">            String newTaskText = JOptionPane.showInputDialog(</span>
+<span class="nc" id="L165">                frame, &quot;Enter new task:&quot;, item.getTask()</span>
+            );
+<span class="nc" id="L167">            String newDueDateText = JOptionPane.showInputDialog(</span>
+<span class="nc" id="L168">                frame, &quot;Enter new due date (dd-MM-yyyy):&quot;, item.getDueDateFormatted()</span>
+            );
+
+<span class="nc bnc" id="L171" title="All 4 branches missed.">            if (newTaskText != null &amp;&amp; newDueDateText != null) {</span>
+<span class="nc" id="L172">                item.setTask(newTaskText);</span>
+<span class="nc" id="L173">                item.setDueDate(newDueDateText);</span>
+<span class="nc" id="L174">                taskList.repaint();</span>
+<span class="nc" id="L175">                showInfo(&quot;Task updated successfully!&quot;);</span>
+            }
+<span class="nc" id="L177">        } catch (IllegalArgumentException | IndexOutOfBoundsException e) {</span>
+<span class="nc" id="L178">            showError(&quot;Error editing task: &quot; + e.getMessage());</span>
+<span class="nc" id="L179">        }</span>
+<span class="nc" id="L180">    }</span>
+
+    /**
+     * Toggles the completion status of the selected task.
+     */
+    private void toggleTaskStatus() {
+<span class="nc" id="L186">        int selectedIndex = taskList.getSelectedIndex();</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        if (selectedIndex == -1) {</span>
+<span class="nc" id="L188">            showError(&quot;Please select a task to toggle&quot;);</span>
+<span class="nc" id="L189">            return;</span>
+        }
+
+        try {
+<span class="nc" id="L193">            TaskItem item = taskService.getTask(selectedIndex);</span>
+<span class="nc" id="L194">            item.toggleCompleted();</span>
+<span class="nc" id="L195">            taskList.repaint();</span>
+<span class="nc" id="L196">        } catch (IndexOutOfBoundsException e) {</span>
+<span class="nc" id="L197">            showError(&quot;Error toggling task: &quot; + e.getMessage());</span>
+<span class="nc" id="L198">        }</span>
+<span class="nc" id="L199">    }</span>
+
+    /**
+     * Clears all tasks after confirmation.
+     */
+    private void clearAllTasks() {
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        if (taskService.isEmpty()) {</span>
+<span class="nc" id="L206">            showInfo(&quot;No tasks to clear&quot;);</span>
+<span class="nc" id="L207">            return;</span>
+        }
+
+<span class="nc" id="L210">        int confirm = JOptionPane.showConfirmDialog(</span>
+            frame,
+            &quot;Are you sure you want to clear all tasks?&quot;,
+            &quot;Confirm Clear&quot;,
+            JOptionPane.YES_NO_OPTION
+        );
+
+<span class="nc bnc" id="L217" title="All 2 branches missed.">        if (confirm == JOptionPane.YES_OPTION) {</span>
+<span class="nc" id="L218">            taskService.clearAllTasks();</span>
+<span class="nc" id="L219">            listModel.clear();</span>
+<span class="nc" id="L220">            showInfo(&quot;All tasks cleared!&quot;);</span>
+        }
+<span class="nc" id="L222">    }</span>
+
+    /**
+     * Shows an error message dialog.
+     * 
+     * @param message The error message
+     */
+    private void showError(String message) {
+<span class="nc" id="L230">        JOptionPane.showMessageDialog(frame, message, &quot;Error&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L231">    }</span>
+
+    /**
+     * Shows an information message dialog.
+     * 
+     * @param message The information message
+     */
+    private void showInfo(String message) {
+<span class="nc" id="L239">        JOptionPane.showMessageDialog(frame, message, &quot;Info&quot;, JOptionPane.INFORMATION_MESSAGE);</span>
+<span class="nc" id="L240">    }</span>
+
+    /**
+     * Makes the UI visible.
+     */
+    public void show() {
+<span class="nc" id="L246">        frame.setVisible(true);</span>
+<span class="nc" id="L247">    }</span>
+
+    /**
+     * Gets the frame for testing purposes.
+     * 
+     * @return The main JFrame
+     */
+    JFrame getFrame() {
+<span class="nc" id="L255">        return frame;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

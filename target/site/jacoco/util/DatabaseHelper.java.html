@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DatabaseHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java To-Do List</a> &gt; <a href="index.source.html" class="el_package">util</a> &gt; <span class="el_source">DatabaseHelper.java</span></div><h1>DatabaseHelper.java</h1><pre class="source lang-java linenums">package util;
+
+import java.sql.*;
+
+/**
+ * INTENTIONAL RELIABILITY AND SECURITY ISSUES FOR DEMO
+ * Multiple database-related vulnerabilities and poor practices.
+ */
+<span class="nc" id="L9">public class DatabaseHelper {</span>
+    
+    // SECURITY ISSUE: Hardcoded credentials
+<span class="nc" id="L12">    private String dbUrl = &quot;jdbc:mysql://localhost:3306/todolist&quot;;</span>
+<span class="nc" id="L13">    private String dbUser = &quot;admin&quot;;</span>
+<span class="nc" id="L14">    private String dbPassword = &quot;password123&quot;;</span>
+    
+    /**
+     * RELIABILITY ISSUE: Connection not closed properly
+     * SECURITY ISSUE: SQL Injection
+     */
+    public ResultSet executeQuery(String tableName, String condition) throws SQLException {
+<span class="nc" id="L21">        Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);</span>
+<span class="nc" id="L22">        Statement stmt = conn.createStatement();</span>
+        
+        // SQL INJECTION: Building query with string concatenation
+<span class="nc" id="L25">        String query = &quot;SELECT * FROM &quot; + tableName + &quot; WHERE &quot; + condition;</span>
+<span class="nc" id="L26">        ResultSet rs = stmt.executeQuery(query);</span>
+        
+        // RELIABILITY ISSUE: Connection and statement not closed
+<span class="nc" id="L29">        return rs;</span>
+    }
+    
+    /**
+     * RELIABILITY ISSUE: Multiple resource leaks
+     */
+    public void insertTask(String task, String dueDate) {
+<span class="nc" id="L36">        Connection conn = null;</span>
+<span class="nc" id="L37">        Statement stmt = null;</span>
+        
+        try {
+<span class="nc" id="L40">            conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);</span>
+<span class="nc" id="L41">            stmt = conn.createStatement();</span>
+            
+            // SQL INJECTION: String concatenation
+<span class="nc" id="L44">            String sql = &quot;INSERT INTO tasks (task, due_date) VALUES ('&quot; + </span>
+                        task + &quot;', '&quot; + dueDate + &quot;')&quot;;
+<span class="nc" id="L46">            stmt.executeUpdate(sql);</span>
+            
+            // RELIABILITY ISSUE: Resources not closed in finally block
+<span class="nc" id="L49">        } catch (SQLException e) {</span>
+<span class="nc" id="L50">            e.printStackTrace();</span>
+<span class="nc" id="L51">        }</span>
+<span class="nc" id="L52">    }</span>
+    
+    /**
+     * DUPLICATION: Similar code to insertTask
+     * RELIABILITY ISSUE: Resource leak
+     */
+    public void updateTask(String taskId, String newTask) {
+<span class="nc" id="L59">        Connection conn = null;</span>
+<span class="nc" id="L60">        Statement stmt = null;</span>
+        
+        try {
+<span class="nc" id="L63">            conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);</span>
+<span class="nc" id="L64">            stmt = conn.createStatement();</span>
+            
+            // SQL INJECTION: String concatenation
+<span class="nc" id="L67">            String sql = &quot;UPDATE tasks SET task = '&quot; + newTask + </span>
+                        &quot;' WHERE id = &quot; + taskId;
+<span class="nc" id="L69">            stmt.executeUpdate(sql);</span>
+            
+            // RELIABILITY ISSUE: Resources not closed
+<span class="nc" id="L72">        } catch (SQLException e) {</span>
+<span class="nc" id="L73">            e.printStackTrace();</span>
+<span class="nc" id="L74">        }</span>
+<span class="nc" id="L75">    }</span>
+    
+    /**
+     * DUPLICATION: Similar code pattern repeated
+     * RELIABILITY ISSUE: Resource leak
+     */
+    public void deleteTask(String taskId) {
+<span class="nc" id="L82">        Connection conn = null;</span>
+<span class="nc" id="L83">        Statement stmt = null;</span>
+        
+        try {
+<span class="nc" id="L86">            conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);</span>
+<span class="nc" id="L87">            stmt = conn.createStatement();</span>
+            
+            // SQL INJECTION: String concatenation
+<span class="nc" id="L90">            String sql = &quot;DELETE FROM tasks WHERE id = &quot; + taskId;</span>
+<span class="nc" id="L91">            stmt.executeUpdate(sql);</span>
+            
+            // RELIABILITY ISSUE: Resources not closed
+<span class="nc" id="L94">        } catch (SQLException e) {</span>
+<span class="nc" id="L95">            e.printStackTrace();</span>
+<span class="nc" id="L96">        }</span>
+<span class="nc" id="L97">    }</span>
+    
+    /**
+     * RELIABILITY ISSUE: Null pointer risk
+     * MAINTAINABILITY ISSUE: Complex nested conditions
+     */
+    public boolean checkTaskExists(String taskId) {
+<span class="nc" id="L104">        Connection conn = null;</span>
+<span class="nc" id="L105">        Statement stmt = null;</span>
+<span class="nc" id="L106">        ResultSet rs = null;</span>
+        
+        try {
+<span class="nc" id="L109">            conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">            if (conn != null) {</span>
+<span class="nc" id="L111">                stmt = conn.createStatement();</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">                if (stmt != null) {</span>
+<span class="nc" id="L113">                    rs = stmt.executeQuery(&quot;SELECT * FROM tasks WHERE id = &quot; + taskId);</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">                    if (rs != null) {</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">                        if (rs.next()) {</span>
+<span class="nc" id="L116">                            return true;</span>
+                        }
+                    }
+                }
+            }
+<span class="nc" id="L121">        } catch (SQLException e) {</span>
+<span class="nc" id="L122">            e.printStackTrace();</span>
+<span class="nc" id="L123">        }</span>
+        // RELIABILITY ISSUE: Resources not closed
+<span class="nc" id="L125">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

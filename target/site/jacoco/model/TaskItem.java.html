@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TaskItem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java To-Do List</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">TaskItem.java</span></div><h1>TaskItem.java</h1><pre class="source lang-java linenums">package model;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Objects;
+
+/**
+ * Represents a task item in the to-do list.
+ * This class encapsulates task data and business logic.
+ */
+public class TaskItem {
+<span class="fc" id="L13">    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(&quot;dd-MM-yyyy&quot;);</span>
+    
+    private String task;
+    private LocalDate dueDate;
+    private boolean isCompleted;
+
+    /**
+     * Creates a new task item.
+     * 
+     * @param task The task description
+     * @param dueDateStr The due date in format dd-MM-yyyy
+     * @throws IllegalArgumentException if task is null/empty or date format is invalid
+     */
+<span class="fc" id="L26">    public TaskItem(String task, String dueDateStr) {</span>
+<span class="fc bfc" id="L27" title="All 4 branches covered.">        if (task == null || task.trim().isEmpty()) {</span>
+<span class="fc" id="L28">            throw new IllegalArgumentException(&quot;Task cannot be null or empty&quot;);</span>
+        }
+        
+<span class="fc" id="L31">        this.task = task.trim();</span>
+<span class="fc" id="L32">        this.dueDate = parseDate(dueDateStr);</span>
+<span class="fc" id="L33">        this.isCompleted = false;</span>
+<span class="fc" id="L34">    }</span>
+
+    /**
+     * Parses a date string to LocalDate.
+     * 
+     * @param dateStr The date string in format dd-MM-yyyy
+     * @return The parsed LocalDate
+     * @throws IllegalArgumentException if date format is invalid
+     */
+    private LocalDate parseDate(String dateStr) {
+<span class="fc bfc" id="L44" title="All 4 branches covered.">        if (dateStr == null || dateStr.trim().isEmpty()) {</span>
+<span class="fc" id="L45">            throw new IllegalArgumentException(&quot;Due date cannot be null or empty&quot;);</span>
+        }
+        
+        try {
+<span class="fc" id="L49">            return LocalDate.parse(dateStr.trim(), DATE_FORMATTER);</span>
+<span class="fc" id="L50">        } catch (DateTimeParseException e) {</span>
+<span class="fc" id="L51">            throw new IllegalArgumentException(&quot;Invalid date format. Expected: dd-MM-yyyy&quot;, e);</span>
+        }
+    }
+
+    /**
+     * Toggles the completion status of the task.
+     */
+    public void toggleCompleted() {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        isCompleted = !isCompleted;</span>
+<span class="fc" id="L60">    }</span>
+
+    /**
+     * Marks the task as completed.
+     */
+    public void markAsCompleted() {
+<span class="fc" id="L66">        isCompleted = true;</span>
+<span class="fc" id="L67">    }</span>
+
+    /**
+     * Marks the task as not completed.
+     */
+    public void markAsNotCompleted() {
+<span class="fc" id="L73">        isCompleted = false;</span>
+<span class="fc" id="L74">    }</span>
+
+    /**
+     * Checks if the task is overdue.
+     * 
+     * @return true if the task is overdue and not completed
+     */
+    public boolean isOverdue() {
+<span class="fc bfc" id="L82" title="All 4 branches covered.">        return !isCompleted &amp;&amp; dueDate.isBefore(LocalDate.now());</span>
+    }
+
+    public boolean isCompleted() {
+<span class="fc" id="L86">        return isCompleted;</span>
+    }
+
+    public String getTask() {
+<span class="fc" id="L90">        return task;</span>
+    }
+
+    public void setTask(String task) {
+<span class="fc bfc" id="L94" title="All 4 branches covered.">        if (task == null || task.trim().isEmpty()) {</span>
+<span class="fc" id="L95">            throw new IllegalArgumentException(&quot;Task cannot be null or empty&quot;);</span>
+        }
+<span class="fc" id="L97">        this.task = task.trim();</span>
+<span class="fc" id="L98">    }</span>
+
+    public LocalDate getDueDate() {
+<span class="fc" id="L101">        return dueDate;</span>
+    }
+
+    public String getDueDateFormatted() {
+<span class="fc" id="L105">        return dueDate.format(DATE_FORMATTER);</span>
+    }
+
+    public void setDueDate(String dueDateStr) {
+<span class="fc" id="L109">        this.dueDate = parseDate(dueDateStr);</span>
+<span class="fc" id="L110">    }</span>
+
+    @Override
+    public String toString() {
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        String status = isCompleted ? &quot;✓&quot; : &quot;✗&quot;;</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        String overdueMarker = isOverdue() ? &quot; [OVERDUE]&quot; : &quot;&quot;;</span>
+<span class="fc" id="L116">        return String.format(&quot;%s %s (%s)%s&quot;, status, task, getDueDateFormatted(), overdueMarker);</span>
+    }
+
+    @Override
+    public boolean equals(Object o) {
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        if (this == o) return true;</span>
+<span class="pc bpc" id="L122" title="1 of 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="fc" id="L123">        TaskItem taskItem = (TaskItem) o;</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        return Objects.equals(task, taskItem.task) &amp;&amp; </span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">               Objects.equals(dueDate, taskItem.dueDate);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L130">        return Objects.hash(task, dueDate);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

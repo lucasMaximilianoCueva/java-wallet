@@ -1,1 +1,4 @@
+ui/TodoListUITest.class
+model/TaskItemTest.class
+service/TaskServiceTest.class
 MainTest.class

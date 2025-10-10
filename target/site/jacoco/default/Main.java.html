@@ -1,186 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Main.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java To-Do List</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">Main.java</span></div><h1>Main.java</h1><pre class="source lang-java linenums">import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Main.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java To-Do List</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">Main.java</span></div><h1>Main.java</h1><pre class="source lang-java linenums">import service.TaskService;
+import ui.TodoListUI;
 
-public class Main {
-    private DefaultListModel&lt;TaskItem&gt; listModel;
-    private JList&lt;TaskItem&gt; taskList;
-    private JTextField taskField;
-    private JTextField dateField;
-<span class="nc" id="L13">    private List&lt;TaskItem&gt; data = new ArrayList&lt;&gt;(); // Array to store data</span>
+import javax.swing.*;
 
-<span class="nc" id="L15">    public Main() {</span>
-        // Create main window
-<span class="nc" id="L17">        JFrame frame = new JFrame(&quot;To-Do List&quot;);</span>
-<span class="nc" id="L18">        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
-<span class="nc" id="L19">        frame.setSize(500, 500); // Increase window size</span>
-
-        // Main panel
-<span class="nc" id="L22">        JPanel panel = new JPanel();</span>
-<span class="nc" id="L23">        panel.setLayout(new BorderLayout(10, 10)); // Add margin</span>
-
-        // Task list
-<span class="nc" id="L26">        listModel = new DefaultListModel&lt;&gt;();</span>
-<span class="nc" id="L27">        taskList = new JList&lt;&gt;(listModel);</span>
-<span class="nc" id="L28">        taskList.setCellRenderer(new CustomListRenderer());</span>
-<span class="nc" id="L29">        panel.add(new JScrollPane(taskList), BorderLayout.CENTER);</span>
-
-        // Input panel (for entering task and due date)
-<span class="nc" id="L32">        JPanel inputPanel = new JPanel(new GridLayout(3, 2, 10, 10)); // GridLayout with margin</span>
-<span class="nc" id="L33">        inputPanel.add(new JLabel(&quot;Task:&quot;));</span>
-<span class="nc" id="L34">        taskField = new JTextField();</span>
-<span class="nc" id="L35">        inputPanel.add(taskField);</span>
-
-<span class="nc" id="L37">        inputPanel.add(new JLabel(&quot;Due Date (dd-mm-yyyy):&quot;));</span>
-<span class="nc" id="L38">        dateField = new JTextField();</span>
-<span class="nc" id="L39">        inputPanel.add(dateField);</span>
-
-        // Buttons panel
-<span class="nc" id="L42">        JPanel buttonPanel = new JPanel(new GridLayout(1, 5, 10, 10)); // 5 buttons</span>
-<span class="nc" id="L43">        JButton addButton = new JButton(&quot;Add&quot;);</span>
-<span class="nc" id="L44">        JButton removeButton = new JButton(&quot;Remove&quot;);</span>
-<span class="nc" id="L45">        JButton editButton = new JButton(&quot;Edit&quot;);</span>
-<span class="nc" id="L46">        JButton saveButton = new JButton(&quot;Save&quot;);</span>
-<span class="nc" id="L47">        JButton toggleButton = new JButton(&quot;Completed&quot;);</span>
-
-        // Add buttons to panel
-<span class="nc" id="L50">        buttonPanel.add(addButton);</span>
-<span class="nc" id="L51">        buttonPanel.add(removeButton);</span>
-<span class="nc" id="L52">        buttonPanel.add(editButton);</span>
-<span class="nc" id="L53">        buttonPanel.add(saveButton);</span>
-<span class="nc" id="L54">        buttonPanel.add(toggleButton);</span>
-
-        // Add action listeners to buttons
-<span class="nc" id="L57">        addButton.addActionListener(e -&gt; addTask());</span>
-<span class="nc" id="L58">        removeButton.addActionListener(e -&gt; removeTask());</span>
-<span class="nc" id="L59">        editButton.addActionListener(e -&gt; editTask());</span>
-<span class="nc" id="L60">        saveButton.addActionListener(e -&gt; saveTasks());</span>
-<span class="nc" id="L61">        toggleButton.addActionListener(e -&gt; toggleTaskStatus());</span>
-
-        // Add panels to main panel
-<span class="nc" id="L64">        panel.add(inputPanel, BorderLayout.NORTH);</span>
-<span class="nc" id="L65">        panel.add(buttonPanel, BorderLayout.SOUTH);</span>
-
-        // Add panel to frame
-<span class="nc" id="L68">        frame.add(panel);</span>
-<span class="nc" id="L69">        frame.setVisible(true);</span>
-<span class="nc" id="L70">    }</span>
-
-    // Add a new task
-    private void addTask() {
-<span class="nc" id="L74">        String taskText = taskField.getText().trim();</span>
-<span class="nc" id="L75">        String dueDateText = dateField.getText().trim();</span>
-<span class="nc bnc" id="L76" title="All 4 branches missed.">        if (!taskText.isEmpty() &amp;&amp; !dueDateText.isEmpty()) {</span>
-<span class="nc" id="L77">            TaskItem newTask = new TaskItem(taskText, dueDateText);</span>
-<span class="nc" id="L78">            listModel.addElement(newTask); // Add to list</span>
-<span class="nc" id="L79">            data.add(newTask); // Add to array</span>
-<span class="nc" id="L80">            taskField.setText(&quot;&quot;);</span>
-<span class="nc" id="L81">            dateField.setText(&quot;&quot;);</span>
-        }
-<span class="nc" id="L83">    }</span>
-
-    // Remove a task
-    private void removeTask() {
-<span class="nc" id="L87">        int selectedIndex = taskList.getSelectedIndex();</span>
-<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (selectedIndex != -1) {</span>
-<span class="nc" id="L89">            listModel.remove(selectedIndex); // Remove from list</span>
-<span class="nc" id="L90">            data.remove(selectedIndex); // Remove from array</span>
-        }
-<span class="nc" id="L92">    }</span>
-
-    // Edit a task
-    private void editTask() {
-<span class="nc" id="L96">        int selectedIndex = taskList.getSelectedIndex();</span>
-<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (selectedIndex != -1) {</span>
-<span class="nc" id="L98">            String newTaskText = JOptionPane.showInputDialog(&quot;Enter new task:&quot;);</span>
-<span class="nc" id="L99">            String newDueDateText = JOptionPane.showInputDialog(&quot;Enter new due date (yyyy-mm-dd):&quot;);</span>
-<span class="nc bnc" id="L100" title="All 4 branches missed.">            if (newTaskText != null &amp;&amp; newDueDateText != null) {</span>
-<span class="nc" id="L101">                TaskItem item = listModel.getElementAt(selectedIndex);</span>
-<span class="nc" id="L102">                item.setTask(newTaskText);</span>
-<span class="nc" id="L103">                item.setDueDate(newDueDateText);</span>
-<span class="nc" id="L104">                taskList.repaint(); // Refresh list</span>
-            }
-        }
-<span class="nc" id="L107">    }</span>
-
-    // Mark task as completed
-    private void toggleTaskStatus() {
-<span class="nc" id="L111">        int selectedIndex = taskList.getSelectedIndex();</span>
-<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (selectedIndex != -1) {</span>
-<span class="nc" id="L113">            TaskItem item = listModel.getElementAt(selectedIndex);</span>
-<span class="nc" id="L114">            item.toggleCompleted();</span>
-<span class="nc" id="L115">            taskList.repaint(); // Refresh list</span>
-        }
-<span class="nc" id="L117">    }</span>
-
-    // Save tasks (only in memory)
-    private void saveTasks() {
-<span class="nc" id="L121">        JOptionPane.showMessageDialog(null, &quot;Tasks saved!&quot;);</span>
-<span class="nc" id="L122">    }</span>
-
+/**
+ * Main entry point for the To-Do List application.
+ * This application demonstrates clean architecture and SOLID principles.
+ * 
+ * @author Lucas Maximiliano Cueva
+ * @version 1.0
+ */
+<span class="nc" id="L13">public class Main {</span>
+    
+    /**
+     * Application entry point.
+     * Initializes the application on the Event Dispatch Thread.
+     * 
+     * @param args Command line arguments (not used)
+     */
     public static void main(String[] args) {
-<span class="nc" id="L125">        SwingUtilities.invokeLater(Main::new);</span>
-<span class="nc" id="L126">    }</span>
-}
-
-// Task class
-class TaskItem {
-    private String task;
-    private String dueDate;
-    private boolean isCompleted;
-
-<span class="nc" id="L135">    public TaskItem(String task, String dueDate) {</span>
-<span class="nc" id="L136">        this.task = task;</span>
-<span class="nc" id="L137">        this.dueDate = dueDate;</span>
-<span class="nc" id="L138">        this.isCompleted = false;</span>
-<span class="nc" id="L139">    }</span>
-
-    public void toggleCompleted() {
-<span class="nc bnc" id="L142" title="All 2 branches missed.">        isCompleted = !isCompleted;</span>
-<span class="nc" id="L143">    }</span>
-
-    public boolean isCompleted() {
-<span class="nc" id="L146">        return isCompleted;</span>
-    }
-
-    public String getTask() {
-<span class="nc" id="L150">        return task;</span>
-    }
-
-    public void setTask(String task) {
-<span class="nc" id="L154">        this.task = task;</span>
-<span class="nc" id="L155">    }</span>
-
-    public String getDueDate() {
-<span class="nc" id="L158">        return dueDate;</span>
-    }
-
-    public void setDueDate(String dueDate) {
-<span class="nc" id="L162">        this.dueDate = dueDate;</span>
-<span class="nc" id="L163">    }</span>
-
-    @Override
-    public String toString() {
-<span class="nc bnc" id="L167" title="All 2 branches missed.">        return (isCompleted ? &quot;✓ &quot; : &quot;✗ &quot;) + task + &quot; (&quot; + dueDate + &quot;)&quot;;</span>
-    }
-}
-
-// Custom list renderer for better UI
-<span class="nc" id="L172">class CustomListRenderer extends DefaultListCellRenderer {</span>
-<span class="nc" id="L173">    private ImageIcon checkIcon = new ImageIcon(&quot;check.png&quot;);</span>
-<span class="nc" id="L174">    private ImageIcon uncheckIcon = new ImageIcon(&quot;uncheck.png&quot;);</span>
-
-    @Override
-    public Component getListCellRendererComponent(JList&lt;?&gt; list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-<span class="nc" id="L178">        JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);</span>
-<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (value instanceof TaskItem) {</span>
-<span class="nc" id="L180">            TaskItem task = (TaskItem) value;</span>
-<span class="nc bnc" id="L181" title="All 2 branches missed.">            label.setIcon(task.isCompleted() ? checkIcon : uncheckIcon);</span>
-        }
-<span class="nc" id="L183">        return label;</span>
-    }
+<span class="nc" id="L22">        SwingUtilities.invokeLater(() -&gt; {</span>
+<span class="nc" id="L23">            TaskService taskService = new TaskService();</span>
+<span class="nc" id="L24">            TodoListUI ui = new TodoListUI(taskService);</span>
+<span class="nc" id="L25">            ui.show();</span>
+<span class="nc" id="L26">        });</span>
+<span class="nc" id="L27">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomListRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Java To-Do List</a> &gt; <a href="index.source.html" class="el_package">ui</a> &gt; <span class="el_source">CustomListRenderer.java</span></div><h1>CustomListRenderer.java</h1><pre class="source lang-java linenums">package ui;
+
+import model.TaskItem;
+
+import javax.swing.*;
+import java.awt.*;
+
+/**
+ * Custom list renderer for displaying task items with visual indicators.
+ * Provides better UI/UX for the to-do list.
+ */
+<span class="nc" id="L12">public class CustomListRenderer extends DefaultListCellRenderer {</span>
+<span class="nc" id="L13">    private static final Color COMPLETED_COLOR = new Color(200, 255, 200);</span>
+<span class="nc" id="L14">    private static final Color OVERDUE_COLOR = new Color(255, 200, 200);</span>
+<span class="nc" id="L15">    private static final Color NORMAL_COLOR = Color.WHITE;</span>
+
+    @Override
+    public Component getListCellRendererComponent(JList&lt;?&gt; list, Object value, 
+                                                  int index, boolean isSelected, 
+                                                  boolean cellHasFocus) {
+<span class="nc" id="L21">        JLabel label = (JLabel) super.getListCellRendererComponent(</span>
+            list, value, index, isSelected, cellHasFocus
+        );
+        
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        if (value instanceof TaskItem) {</span>
+<span class="nc" id="L26">            TaskItem task = (TaskItem) value;</span>
+            
+<span class="nc bnc" id="L28" title="All 2 branches missed.">            if (!isSelected) {</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">                if (task.isCompleted()) {</span>
+<span class="nc" id="L30">                    label.setBackground(COMPLETED_COLOR);</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">                } else if (task.isOverdue()) {</span>
+<span class="nc" id="L32">                    label.setBackground(OVERDUE_COLOR);</span>
+                } else {
+<span class="nc" id="L34">                    label.setBackground(NORMAL_COLOR);</span>
+                }
+            }
+            
+            // Strike through completed tasks
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            if (task.isCompleted()) {</span>
+<span class="nc" id="L40">                label.setFont(label.getFont().deriveFont(Font.ITALIC));</span>
+            }
+        }
+        
+<span class="nc" id="L44">        return label;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="MainTest" time="0.005" tests="2" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="model.TaskItemTest" time="0.171" tests="25" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="18"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -58,6 +58,29 @@
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="62.0"/>
   </properties>
-  <testcase name="testMainClassExists" classname="MainTest" time="0.001"/>
-  <testcase name="testMainMethodExists" classname="MainTest" time="0.001"/>
+  <testcase name="testGetDueDate" classname="model.TaskItemTest" time="0.023"/>
+  <testcase name="testToStringOverdue" classname="model.TaskItemTest" time="0.082"/>
+  <testcase name="testCreateTaskWithNullDueDate" classname="model.TaskItemTest" time="0.003"/>
+  <testcase name="testSetDueDateWithInvalidFormat" classname="model.TaskItemTest" time="0.01"/>
+  <testcase name="testToStringPending" classname="model.TaskItemTest" time="0.002"/>
+  <testcase name="testSetTaskWithEmpty" classname="model.TaskItemTest" time="0.003"/>
+  <testcase name="testCreateTaskWithEmptyDueDate" classname="model.TaskItemTest" time="0.001"/>
+  <testcase name="testIsOverdue" classname="model.TaskItemTest" time="0.001"/>
+  <testcase name="testCreateTaskWithWhitespaceTask" classname="model.TaskItemTest" time="0.002"/>
+  <testcase name="testCompletedTaskNotOverdue" classname="model.TaskItemTest" time="0.001"/>
+  <testcase name="testCreateTaskWithEmptyTask" classname="model.TaskItemTest" time="0.002"/>
+  <testcase name="testFutureTaskNotOverdue" classname="model.TaskItemTest" time="0.001"/>
+  <testcase name="testMarkAsCompleted" classname="model.TaskItemTest" time="0.002"/>
+  <testcase name="testCreateTaskWithValidData" classname="model.TaskItemTest" time="0.001"/>
+  <testcase name="testSetTaskWithNull" classname="model.TaskItemTest" time="0.002"/>
+  <testcase name="testSetDueDate" classname="model.TaskItemTest" time="0.001"/>
+  <testcase name="testToggleCompleted" classname="model.TaskItemTest" time="0"/>
+  <testcase name="testToStringCompleted" classname="model.TaskItemTest" time="0.001"/>
+  <testcase name="testMarkAsNotCompleted" classname="model.TaskItemTest" time="0.001"/>
+  <testcase name="testCreateTaskWithInvalidDateFormat" classname="model.TaskItemTest" time="0.001"/>
+  <testcase name="testHashCode" classname="model.TaskItemTest" time="0.001"/>
+  <testcase name="testCreateTaskWithNullTask" classname="model.TaskItemTest" time="0.001"/>
+  <testcase name="testEquals" classname="model.TaskItemTest" time="0.002"/>
+  <testcase name="testSetTask" classname="model.TaskItemTest" time="0.002"/>
+  <testcase name="testSetTaskTrimsWhitespace" classname="model.TaskItemTest" time="0.001"/>
 </testsuite>
